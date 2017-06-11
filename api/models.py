@@ -1,30 +1,39 @@
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
-class Horaire(models.Model):
-    horaire_heure = models.IntegerField(default=12)
-    horaire_minute = models.IntegerField(default=59)
+class Schedule(models.Model):
+    hour = models.IntegerField(default=12)
+    minute = models.IntegerField(default=59)
 
     def __str__(self):
-        return "%i:%i" % (self.horaire_heure, self.horaire_minute)
+        return "%i:%i" % (self.hour, self.minute)
 
-class Ligne(models.Model):
-    ligne_lettre = models.CharField(max_length=1)
-
-    def __str__(self):
-        return self.ligne_lettre
-
-class Conducteur(models.Model):
-    conducteur_nom = models.CharField(max_length=255)
+class Line(models.Model):
+    letter = models.CharField(max_length=1)
+    directionA = models.CharField(max_length=255)
+    directionB = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.conducteur_nom
+        return self.letter
+
+class Driver(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 class Train(models.Model):
-    train_name = models.CharField(max_length=255)
-    train_ligne = models.ForeignKey(Ligne, on_delete=models.CASCADE, blank=True, null=True)
-    train_horaire = models.ManyToManyField(Horaire, blank=True, null=True)
-    train_conducteur = models.OneToOneField(Conducteur, blank=True, null=True)
+    name = models.CharField(max_length=255)
+    line = models.ForeignKey(Line, on_delete=models.CASCADE, blank=True, null=True)
+    schedules = models.ManyToManyField(Schedule, blank=True, null=True)
+    driver = models.OneToOneField(Driver, blank=True, null=True)
 
     def __str__(self):
-        return self.train_name
+        return self.name
+
+class Station(models.Model):
+    name = models.CharField(max_length=255)
+    lines = models.ManyToManyField(Line, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
