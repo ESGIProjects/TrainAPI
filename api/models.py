@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
+
 
 class Schedule(models.Model):
     hour = models.IntegerField(default=12)
@@ -8,19 +8,22 @@ class Schedule(models.Model):
     def __str__(self):
         return "%i:%i" % (self.hour, self.minute)
 
+
 class Line(models.Model):
-    letter = models.CharField(max_length=1)
+    letter = models.CharField(max_length=2)
     directionA = models.CharField(max_length=255)
     directionB = models.CharField(max_length=255)
 
     def __str__(self):
         return self.letter
 
+
 class Driver(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
+
 
 class Train(models.Model):
     name = models.CharField(max_length=255)
@@ -30,6 +33,7 @@ class Train(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Station(models.Model):
     name = models.CharField(max_length=255)
