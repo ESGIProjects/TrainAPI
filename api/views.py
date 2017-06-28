@@ -45,36 +45,54 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
-
+    
 
 @csrf_exempt
 def ratp_api_call(request):
+
     if request.method == 'GET':
+        # Vider la bdd
+        Station.objects.all().delete()
+        Line.objects.all().delete()
 
-        # 1. Lignes de métro
+        # 1. recup lines
         r = requests.get('https://api-ratp.pierre-grimaud.fr/v3/lines/metros?_format=json')
-        metroLinesResponse = json.loads(r.text)
-        metroIds = []
+        linesJson = json.loads(r.text)['result']['metros']
 
-        for item in metroLinesResponse['result']['metros']:
-            metro = Line()
-            metro.letter = item['code']
-            metroIds.append(item['code'])
-            directions = item['directions'].split(' / ')
-            metro.directionA = directions[0]
+        lineArray = []
+        stationArray = []
+
+        for lineJson in linesJson:
+            line = Line()
+            line.letter = lineJson['code']
+
+            directions = lineJson['directions'].split(' / ')
+            line.directionA = directions[0]
+
             if len(directions) >= 2:
-                metro.directionB = directions[1]
-            metro.save()
+                line.directionA = directions[1]
 
-        # 2. Stations
-        for lineCode in metroIds:
-            r = requests.get('https://api-ratp.pierre-grimaud.fr/v3/stations/metros/'+lineCode)
-            stationsLinResponse = json.loads(r.text)
+            line.save()
+            lineArray.append(line)
 
-            #for item in stationsLinResponse['result']['stations']:
-            #    station = Station()
-           #     station.lines
+        # 2. recup stations
+        for line in lineArray:
+            r = requests.get('https://api-ratp.pierre-grimaud.fr/v3/stations/metros/' + line.letter)
+            stationsJson = json.loads(r.text)['result']['stations']
 
+            for stationJson in stationsJson:
+                if any(existingStation.name == stationJson['name'] for existingStation in stationArray):
+                    station = [existingStation for existingStation in stationArray if existingStation.name == stationJson['name']][0]
+                    station.lines.add(line)
+                    station.save()
+                else:
+                    station = Station()
+                    station.name = stationJson['name']
+                    stationArray.append(station)
+                    station.save()
+                    station.lines.add(line)
+                    station.save()
+
+        print('over')
         return JsonResponse({}, status=200)
     return JsonResponse({}, status=400)
-
