@@ -24,7 +24,7 @@ class DriverSerializer(serializers.HyperlinkedModelSerializer):
 class TrainSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Train
-        fields = ('url', 'name', 'line', 'schedules', 'driver')
+        fields = ('url', 'name', 'line', 'schedule', 'driver')
 
 
 class StationSerializer(serializers.HyperlinkedModelSerializer):

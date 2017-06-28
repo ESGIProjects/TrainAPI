@@ -28,7 +28,7 @@ class Driver(models.Model):
 class Train(models.Model):
     name = models.CharField(max_length=255)
     line = models.ForeignKey(Line, on_delete=models.CASCADE, blank=True, null=True)
-    schedules = models.ManyToManyField(Schedule, blank=True, null=True)
+    schedule = models.ForeignKey(Schedule, blank=True, null=True)
     driver = models.OneToOneField(Driver, blank=True, null=True)
 
     def __str__(self):
