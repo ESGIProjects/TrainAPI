@@ -36,4 +36,10 @@ class StationSerializer(serializers.HyperlinkedModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'id', 'username')
+        fields = ('url', 'id', 'username', 'email', 'password', 'first_name', 'last_name')
+        extra_kwargs = {
+            'password': {
+                'write_only': True
+            }
+        }
+

@@ -17,5 +17,6 @@ router.register(r'users', views.UserViewSet)
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'login/', include('rest_framework.urls')),
-    url(r'token/', token_views.obtain_auth_token)
+    url(r'token/', token_views.obtain_auth_token),
+    url(r'^ratp/$', views.ratp_api_call)
 ]
