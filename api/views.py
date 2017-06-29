@@ -45,7 +45,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
-    
+
 
 @csrf_exempt
 def ratp_api_call(request):
@@ -70,7 +70,7 @@ def ratp_api_call(request):
             line.directionA = directions[0]
 
             if len(directions) >= 2:
-                line.directionA = directions[1]
+                line.directionB = directions[1]
 
             line.save()
             lineArray.append(line)
@@ -94,5 +94,9 @@ def ratp_api_call(request):
                     station.save()
 
         print('over')
-        return JsonResponse({}, status=200)
-    return JsonResponse({}, status=400)
+        return JsonResponse({
+            'message': 'Data loaded!'
+        }, status=201)
+    return JsonResponse({
+        'message': 'Works only on GET method'
+    }, status=400)
