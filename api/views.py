@@ -91,7 +91,7 @@ def ratp_api_call(request):
                     stationArray.append(station)
                     station.save()
                     station.lines.add(line)
-                    station.save()
+                    station.save() 
 
         print('over')
         return JsonResponse({
